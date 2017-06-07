@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html ng-app="shareMe">
+    <head>
+        <meta charset="utf-8">
+        <base href="/">
+        <link href="stylesheet/bootstrap.min.css" rel="stylesheet" />
+        <link href="stylesheet/animate.min.css" rel="stylesheet">
+        <link href="stylesheet/timeline.css" rel="stylesheet">
+        <link href="stylesheet/login_register.css" rel="stylesheet">
+        <link href="stylesheet/forms.css" rel="stylesheet">
+        <link href="stylesheet/buttons.css" rel="stylesheet">
+        <link href="stylesheet/common.css" rel="stylesheet">
+
+    </head>
+
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+    <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
+    <div ng-view></div>
+
+    <script src="javascript/angular.js"></script>
+    <script src="javascript/angular-route.js"></script>
+    <script src="javascript/angular-cookies.js"></script>
+    <script src="modules/route.js"></script>
+    <script src="authenticationFactory.js"></script>
+    <script src="modules/authentication/controller.js"></script>
+    <script src="modules/home/controller.js"></script>
+    <script src="flashService.js"></script>
+    <script src="userService.js"></script>
+    <script src="validateEmail.js"></script>
+    <script src="noSpecialCharacter.js"></script>
+    <script src="javascript/jquery.min.js"></script>
+    <script src="javascript/bootstrap.min.js"></script>
+</html>
