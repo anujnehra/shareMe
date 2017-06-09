@@ -35,19 +35,13 @@
                                         FlashService.Success('Registration successful', true);
                                         $scope.user = {};
                                         $scope.formRegistration.$setPristine();
-                                        $scope.dataLoading = false;
                                     } else {
                                         FlashService.Error(response.message);
-                                        $scope.dataLoading = false;
                                     }
+                                    $scope.dataLoading = false;
                                 });
                         }
                     });
-                // $timeout(function () {
-                //     //clear message
-                //     delete $rootScope.flash;
-                // }, 3000);
-                // FlashService.clearFlashMessage();
             };
         }
     }]);
@@ -68,31 +62,32 @@
                             .success(function (response) {
                                 if (response.status) {
                                     FlashService.Success(response.message, true);
-                                    $scope.dataLoading = false;
                                 } else {
                                     FlashService.Error(response.message);
-                                    $scope.dataLoading = false;
                                 }
+                                $scope.dataLoading = false;
                             });
                     } else {
                         FlashService.Error(response.message);
                         $scope.dataLoading = false;
                     }
-                    // FlashService.clearFlashMessage();
                 });
         };
     }]);
 
-    authentication.controller('ResetController', ['$scope', '$routeParams', 'FlashService', '$http', function ($scope, $routeParams, FlashService, $http) {
-        $http.post('/validate/token', $routeParams.token)
+    authentication.controller('ResetController', ['$scope', '$routeParams', 'FlashService', '$http', 'AuthenticationService', function ($scope, $routeParams, FlashService, $http, AuthenticationService) {
+        $scope.changePasswordRequest = false;
+        AuthenticationService.ClearCredentials();
+        $scope.dataLoading = true;
+        $http.post('/reset/validate/token', {token: $routeParams.token})
             .success(function (response) {
                 if (response.status) {
-                    // FlashService.Success(response.message, true);
-                    // $scope.dataLoading = false;
+                    $scope.changePasswordRequest = true;
+                    $scope.changePasswordRequestToken = $routeParams.token;
                 } else {
                     FlashService.Error(response.message);
-                    $scope.dataLoading = false;
                 }
+                $scope.dataLoading = false;
             });
     }]);
 

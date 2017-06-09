@@ -1,21 +1,54 @@
-<div class="container">
+<div class="container" ng-if="changePasswordRequest">
     <div class="row">
-        <div class="col-sm-12">
+        <div class="text-center col-sm-12">
             <h1>Change Password</h1>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-6 col-sm-offset-3">
-            <form method="post" id="passwordForm">
-                <input type="password" class="input-lg form-control" name="password1" id="password1"
-                       placeholder="New Password">
+            <div ng-show="error" class="alert alert-danger">{{error}}</div>
+            <form method="post" name="resetPasswordForm" action="/reset/password">
+                <input type="hidden" name="tokenFromUrl" ng-value="changePasswordRequestToken"/>
+                <div class="fieldset"
+                     ng-class="{'has-error':formData.password.$invalid && !formData.password.$pristine}">
+                    <input class="input-lg form-control" type="password" id="password" name="password"
+                           ng-model="formData.password" ng-minlength="8" ng-maxlength="20"
+                           ng-pattern="/(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z])/" placeholder="New Password" required/>
+                    <p ng-show="resetPasswordForm.password.$error.minlength" class="error">
+                        Passwords must be between 8 and 20 characters.</p>
+                    <p ng-show="resetPasswordForm.password.$error.pattern" class="error">
+                        Must contain one lower &amp; uppercase letter, and one non-alpha character (a number or a
+                        symbol.)</p>
+                </div>
 
-                <input type="password" class="input-lg form-control" name="password2" id="password2"
-                       placeholder="Repeat Password">
+                <div class="fieldset"
+                     ng-class="{'has-error':formData.password_c.$invalid && !formData.password_c.$pristine}">
 
-                <input type="submit" class="col-xs-12 btn btn-primary btn-load btn-lg"
+                    <input class="input-lg form-control" type="password" id="password_c" name="password_c"
+                           ng-model="formData.password_c" placeholder="Confirm Password"
+                           password-validate="formData.password" required/>
+
+                    <p ng-show="resetPasswordForm.password_c.$error.noMatch" class="error">Passwords do not match.</p>
+                </div>
+                <input ng-disabled="resetPasswordForm.$invalid || dataLoading" type="submit"
+                       class="col-xs-12 btn btn-primary btn-load btn-lg"
                        data-loading-text="Changing Password..." value="Change Password">
             </form>
+            <div class="text-center">
+                <a href="/login">Back to login</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container" ng-if="!changePasswordRequest">
+    <div class="row">
+        <div class="col-sm-12">
+            <div ng-show="error" class="alert alert-danger">{{error}}</div>
+            <div class="text-center">
+                <a href="/login">Back to login</a>
+            </div>
         </div>
     </div>
 </div>

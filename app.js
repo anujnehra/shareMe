@@ -33,6 +33,7 @@ app.use('/register', routes);
 app.use('/forgot', routes);
 app.use('/logout', routes);
 app.use('/password/reset/:token', routes);
+app.use('/reset/password', routes); // route for direct hit no routing of angular going for mail.js
 
 var apiUserMethodJsInclude = require('./modules/api/apiUserMethod');
 routes.post('/api/login', apiUserMethodJsInclude.login);
