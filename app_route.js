@@ -85,7 +85,7 @@ module.exports = function (app, routes) {
     app.post('/api/login', includeApiMethodsJs.login);
     app.post('/api/create', includeApiMethodsJs.create);
     app.post('/api/fetchUserByEmail', includeApiMethodsJs.fetchUserByEmail);
-}
+};
 
 /**
  * Method to authenticate whether user exist in session or not
