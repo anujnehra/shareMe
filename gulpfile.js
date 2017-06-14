@@ -25,7 +25,7 @@ gulp.task('server', function () {
  * description: start the development environment
  */
 gulp.task('default', ['server'], function () {
-    gulp.watch(['./server.js', './app.js', './modules/api/apiUserMethod.js'], ['server'], function () {
+    gulp.watch(['./server.js', './app.js', './modules/api/apiMethods.js'], ['server'], function () {
 
     });
 

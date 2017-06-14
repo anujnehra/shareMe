@@ -27,18 +27,16 @@ app.use(express.static(path.join(__dirname, 'factory')));
 app.use(express.static(path.join(__dirname, 'service')));
 app.use(express.static(path.join(__dirname, 'directive')));
 
-app.use('/', routes);
-app.use('/login', routes);
-app.use('/register', routes);
-app.use('/forgot', routes);
-app.use('/logout', routes);
-app.use('/password/reset/:token', routes);
-app.use('/reset/password', routes); // route for direct hit no routing of angular going for mail.js
+var session = require('express-session');
+app.use(session({
+    secret: 'cookie_secret',
+    name: 'cookie_name',
+    proxy: true,
+    resave: true,
+    saveUninitialized: true
+}));
 
-var apiUserMethodJsInclude = require('./modules/api/apiUserMethod');
-routes.post('/api/login', apiUserMethodJsInclude.login);
-routes.post('/api/create', apiUserMethodJsInclude.create);
-routes.post('/api/fetchUserByEmail', apiUserMethodJsInclude.fetchUserByEmail);
+require('./app_route')(app, routes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
