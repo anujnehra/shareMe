@@ -1,10 +1,12 @@
 {
   "name": "AngularJS",
-  "version": "1.0.0",
+  "version": "1.6.x",
   "description": "Angular",
   "main": "server.js",
   "dependencies": {
+    "angular-file-upload": "^2.5.0",
     "angular-md5": "^0.1.10",
+    "angular-ui-bootstrap": "^2.5.0",
     "async": "^2.4.1",
     "body-parser": "^1.15.2",
     "consolidate": "^0.14.5",

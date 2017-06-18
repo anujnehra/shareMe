@@ -4,15 +4,20 @@
     authentication.controller('LoginController', ['$scope', '$rootScope', '$location', '$timeout', '$http', 'UserService', 'FlashService', function ($scope, $rootScope, $location, $timeout, $http, UserService, FlashService) {
         $scope.login = function () {
             $scope.dataLoading = true;
-            $http.post('/login', {email: $scope.email, password: $scope.password})
-                .success(function (response) {
-                    if (response.success) {
-                        $location.path('/home');
-                    } else {
-                        $scope.error = response.message;
-                        $scope.dataLoading = false;
-                    }
-                });
+            $http({
+                method: 'POST',
+                url: '/login',
+                data: {email: $scope.email, password: $scope.password}
+            }).then(function (response) {
+                if (response.data.success) {
+                    $location.path('/profile');
+                } else {
+                    $scope.error = response.data.message;
+                    $scope.dataLoading = false;
+                }
+            }, function (error) {
+
+            });
         };
 
         $scope.register = function () {
@@ -45,15 +50,21 @@
             UserService.FetchByEmail($scope.user)
                 .then(function (response) {
                     if (response.success) {
-                        $http.post('/mail/forgot/password', $scope.user)
-                            .success(function (response) {
-                                if (response.status) {
-                                    FlashService.Success(response.message, true);
-                                } else {
-                                    FlashService.Error(response.message);
-                                }
-                                $scope.dataLoading = false;
-                            });
+                        $http({
+                            method: 'POST',
+                            url: '/mail/forgot/password',
+                            data: $scope.user
+                        }).then(function (responseHttp) {
+                            if (responseHttp.data.status) {
+                                FlashService.Success(responseHttp.data.message, true);
+                            } else {
+                                FlashService.Error(responseHttp.data.message);
+                            }
+                            $scope.dataLoading = false;
+                        }, function (error) {
+
+                        });
+                        $scope.dataLoading = false;
                     } else {
                         FlashService.Error(response.message);
                         $scope.dataLoading = false;
@@ -65,16 +76,22 @@
     authentication.controller('ResetController', ['$scope', '$routeParams', 'FlashService', '$http', function ($scope, $routeParams, FlashService, $http) {
         $scope.changePasswordRequest = false;
         $scope.dataLoading = true;
-        $http.post('/reset/validate/token', {token: $routeParams.token})
-            .success(function (response) {
-                if (response.status) {
-                    $scope.changePasswordRequest = true;
-                    $scope.changePasswordRequestToken = $routeParams.token;
-                } else {
-                    FlashService.Error(response.message);
-                }
-                $scope.dataLoading = false;
-            });
+        $http({
+            method: 'POST',
+            url: '/reset/validate/token',
+            data: {token: $routeParams.token}
+        }).then(function (response) {
+            if (response.data.status) {
+                $scope.changePasswordRequest = true;
+                $scope.changePasswordRequestToken = $routeParams.token;
+            } else {
+                FlashService.Error(response.data.message);
+            }
+            $scope.dataLoading = false;
+        }, function (error) {
+
+        });
+        $scope.dataLoading = false;
     }]);
 
 })();

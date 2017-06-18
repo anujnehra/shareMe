@@ -17,7 +17,7 @@
                                            ng-model="email" required/>
                                 </div>
                                 <div class="form-group">
-                                    <input ng-minlength="5" type="password" name="password" placeholder="Password"
+                                    <input ng-minlength="8" type="password" name="password" placeholder="Password"
                                            id="password" class="form-control" ng-model="password" required/>
                                     <a href="/forgot" class="pull-xs-right">
                                         <small>Forgot?</small>
@@ -76,8 +76,17 @@
                                 </div>
                                 <div class="form-group"
                                      ng-class="{ 'has-error': formRegistration.password.$dirty && formRegistration.password.$error.required }">
-                                    <input ng-minlength="5" type="password" placeholder="Password" name="password"
-                                           id="password" class="form-control" ng-model="user.password" required/>
+                                    <input class="form-control" type="password" id="password" name="password"
+                                           ng-model="user.password" ng-minlength="8" ng-maxlength="20"
+                                           ng-pattern="/(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z])/" placeholder="Password"
+                                           required/>
+                                    <p ng-show="formRegistration.password.$error.minlength" class="error">
+                                        Passwords must be between 8 and 20 characters.</p>
+                                    <p ng-show="formRegistration.password.$error.pattern" class="error">
+                                        Must contain one lower &amp; uppercase letter, and one non-alpha character (a
+                                        number or a
+                                        symbol.)</p>
+
                                     <span ng-show="formRegistration.password.$dirty && formRegistration.password.$error.required"
                                           class="help-block">Password is required</span>
                                 </div>

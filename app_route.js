@@ -10,7 +10,7 @@ module.exports = function (app, routes) {
         if (typeof req.session.user_id != "number") {
             res.render('index');
         } else {
-            res.redirect('/home');
+            res.redirect('/profile');
         }
     });
 
@@ -18,21 +18,35 @@ module.exports = function (app, routes) {
      * / GET
      */
     app.get('/', checkAuth, function (req, res) {
-        res.redirect('/home');
+        res.redirect('/profile');
     });
 
     /**
-     * Home GET
+     * Profile GET
+     */
+    app.get('/profile', checkAuth, function (req, res) {
+        connection.query("SELECT * FROM sm_profile WHERE user_id = '" + req.session.user_id + "' AND display_picture IS NOT NULL AND phone IS NOT NULL AND interest IS NOT NULL", function (error, results) {
+            if (results.length > 0) {
+                res.send({success: true, message: '', data: ''});
+            } else {
+                res.send({success: false, message: 'profile not exist', data: results});
+            }
+        });
+    });
+
+    /**
+     * ProfileHome GET
      */
     app.get('/home', checkAuth, function (req, res) {
         res.render('index');
     });
 
+
     /**
      * Login POST
      */
     app.post('/login', function (req, res, next) {
-        connection.query("SELECT * FROM sm_users WHERE email = '" + req.body.email + "' AND password = '" + crypto.createHash('sha256').update(req.body.password).digest('base64') + "' ORDER BY id LIMIT 1", function (error, results) {
+        connection.query("SELECT * FROM sm_users WHERE email = '" + req.body.email + "' AND password = '" + crypto.createHash('sha256').update(req.body.password).digest('base64') + "' AND is_active = 1 ORDER BY id LIMIT 1", function (error, results) {
             if (results.length > 0) {
                 req.session.user_id = results[0].id;
                 res.send({success: true, message: '', data: results});
@@ -85,6 +99,54 @@ module.exports = function (app, routes) {
     app.post('/api/login', includeApiMethodsJs.login);
     app.post('/api/create', includeApiMethodsJs.create);
     app.post('/api/fetchUserByEmail', includeApiMethodsJs.fetchUserByEmail);
+
+    /**
+     * Upload profile picture
+     * @type {multer}
+     */
+    var multer = require('multer');
+    var fs = require('fs');
+    var storage = multer.diskStorage({ //multers disk storage settings
+        destination: function (req, file, cb) {
+            cb(null, './profile_picture_upload/')
+        },
+        filename: function (req, file, cb) {
+            var datetimestamp = Date.now();
+            cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
+        }
+    });
+    var upload = multer({ //multer settings
+        storage: storage
+    }).single('file');
+
+    /** API path that will upload the files */
+    app.post('/upload/profile/detail', function (req, res) {
+        upload(req, res, function (err) {
+            if (err) {
+                res.json({status: false, message: err});
+                return;
+            }
+
+            var post = {
+                user_id: req.session.user_id,
+                display_picture: req.file.filename,
+                phone: req.body.phone,
+                interest: req.body.interest
+            };
+
+            var sql = connection.query('INSERT INTO sm_profile SET ?', post, function (err, result) {
+                if (err) {
+                    fs.unlink(req.file.path);
+                    res.send({success: false, message: 'error occurred during upload method - ' + err.code});
+                } else if (result.insertId > 0) {
+                    res.send({success: true, message: '', data: ''});
+                } else {
+                    res.send({success: false, message: 'sorry, profile picture not uploaded', data: result});
+                }
+            });
+        });
+    });
+
 };
 
 /**

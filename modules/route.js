@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('Authentication', []);
-angular.module('Home', []);
+angular.module('Profile', []);
 
-var shareMe = angular.module('shareMe', ['Authentication', 'Home', 'ngRoute', 'ngCookies']);
+var shareMe = angular.module('shareMe', ['Authentication', 'Profile', 'ngRoute', 'ngCookies', 'ui.bootstrap', 'angularFileUpload']);
 
 shareMe.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     $routeProvider
@@ -11,9 +11,9 @@ shareMe.config(['$routeProvider', '$locationProvider', function ($routeProvider,
             controller: 'LoginController',
             templateUrl: 'modules/authentication/views/login.html'
         })
-        .when('/home', {
-            controller: 'HomeController',
-            templateUrl: 'modules/home/views/home.html'
+        .when('/profile', {
+            controller: 'ProfileController',
+            templateUrl: 'modules/profile/views/profile.html'
         })
         .when('/logout', {
             controller: 'LogoutController',
@@ -26,6 +26,10 @@ shareMe.config(['$routeProvider', '$locationProvider', function ($routeProvider,
         .when('/password/reset/:token', {
             controller: 'ResetController',
             templateUrl: 'modules/authentication/views/reset.html'
+        })
+        .when('/home', {
+            controller: 'HomeController',
+            templateUrl: 'modules/profile/views/home.html'
         })
     ;
 
