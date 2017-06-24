@@ -25,11 +25,32 @@ module.exports = function (app, routes) {
      * Profile GET
      */
     app.get('/profile', checkAuth, function (req, res) {
-        connection.query("SELECT * FROM sm_profile WHERE user_id = '" + req.session.user_id + "' AND display_picture IS NOT NULL AND phone IS NOT NULL AND interest IS NOT NULL", function (error, results) {
-            if (results.length > 0) {
-                res.send({success: true, message: '', data: ''});
+        checkProfileDataUploaded(req, res, function (err, data) {
+            if (err) {
+                console.log("ERROR : ", err);
             } else {
-                res.send({success: false, message: 'profile not exist', data: results});
+                if (data.length > 0) {
+                    res.redirect('/home');
+                } else {
+                    res.render('index');
+                }
+            }
+        });
+    });
+
+    /**
+     * Profile POST
+     */
+    app.post('/profile', checkAuth, function (req, res) {
+        checkProfileDataUploaded(req, res, function (err, data) {
+            if (err) {
+                console.log("ERROR : ", err);
+            } else {
+                if (data.length > 0) {
+                    res.send({success: true, message: '', data: ''});
+                } else {
+                    res.send({success: false, message: 'profile not exist', data: ''});
+                }
             }
         });
     });
@@ -165,4 +186,12 @@ function checkAuth(req, res, next) {
     }
 }
 
+function checkProfileDataUploaded(req, res, callback) {
+    connection.query("SELECT * FROM sm_profile WHERE user_id = '" + req.session.user_id + "' AND display_picture IS NOT NULL AND phone IS NOT NULL AND interest IS NOT NULL", function (error, results) {
+        if (error)
+            callback(error, null);
+        else
+            callback(null, results);
+    });
+}
 

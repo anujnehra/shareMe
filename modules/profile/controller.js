@@ -6,7 +6,7 @@
 
         $scope.showProfileUploader = false;
 
-        $http.get('/profile').then(function (response) {
+        $http.post('/profile').then(function (response) {
             if (response.data.success) {
                 $location.path('/home');
             } else {
@@ -55,7 +55,8 @@
 
     }]);
 
-    profile.controller('HomeController', ['$scope', 'FileUploader', 'FlashService', '$location', '$http', function ($scope, FileUploader, FlashService, $location, $http) {
+    profile.controller('HomeController', ['$scope', 'socket', function ($scope, socket) {
+
 
     }]);
 
