@@ -37,6 +37,8 @@ app.use(session({
 }));
 
 require('./app_route')(app, routes);
+require('./mail')(app);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

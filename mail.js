@@ -1,27 +1,28 @@
 var async = require('async');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
-var router = require('./routing');
 var connection = require("./database");
 
-router.post('/mail/forgot/password', function (req, res, next) {
-    async.waterfall([
-        function (done) {
-            crypto.randomBytes(20, function (err, buf) {
-                var token = buf.toString('hex');
-                done(err, token);
-            });
-        },
 
-        function (token, done) {
-            var today = new Date();
-            today.setHours(today.getHours() + 1);
+module.exports = function(app){
+    app.post('/mail/forgot/password', function (req, res, next) {
+        async.waterfall([
+            function (done) {
+                crypto.randomBytes(20, function (err, buf) {
+                    var token = buf.toString('hex');
+                    done(err, token);
+                });
+            },
 
-            var insertionData = {
-                email: req.body.email,
-                reset_password_token: token,
-                reset_password_expires: today
-            };
+            function (token, done) {
+                var today = new Date();
+                today.setHours(today.getHours() + 1);
+
+                var insertionData = {
+                    email: req.body.email,
+                    reset_password_token: token,
+                    reset_password_expires: today
+                };
 
             //Check for existing email in the system
             connection.query("SELECT * FROM sm_forgot_password WHERE email = '" + req.body.email + "'", function (err, results) {
@@ -53,8 +54,8 @@ router.post('/mail/forgot/password', function (req, res, next) {
             var transporter = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 auth: {
-                    user: 'demo@gmail.com', //gmail account details
-                    pass: 'password'
+                    user: 'a', //gmail account details
+                    pass: 'pass'
                 }
             });
 
@@ -70,7 +71,7 @@ router.post('/mail/forgot/password', function (req, res, next) {
 
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
-                    res.json({status: error, message: 'error'});
+                    res.json({status: error, message: 'Invalid transporter credential'});
                 } else {
                     res.json({
                         status: true,
@@ -80,15 +81,15 @@ router.post('/mail/forgot/password', function (req, res, next) {
             });
         }
 
-    ], function (err) {
-        if (err) return next(err);
-        res.redirect('/forgot');
+        ], function (err) {
+            if (err) return next(err);
+            res.redirect('/forgot');
+        });
     });
-});
 /**
  * Validate token request for password change
  */
-router.post('/reset/validate/token', function (req, res, next) {
+ app.post('/reset/validate/token', function (req, res, next) {
     connection.query("SELECT * FROM sm_forgot_password WHERE reset_password_token = '" + req.body.token + "' AND reset_password_expires > NOW()", function (err, results) {
         if (err) {
             res.json({status: err, message: 'error'});
@@ -109,7 +110,7 @@ router.post('/reset/validate/token', function (req, res, next) {
 /**
  * Reset Password based on token validation
  */
-router.post('/reset/password', function (req, res, next) {
+ app.post('/reset/password', function (req, res, next) {
     if (req.body.password === req.body.password_c) {
         connection.query("SELECT email FROM sm_forgot_password WHERE reset_password_token = '" + req.body.tokenFromUrl + "' AND reset_password_expires > NOW()", function (err, results) {
             if (err) {
@@ -147,7 +148,7 @@ router.post('/reset/password', function (req, res, next) {
                             });
                         }
                     }
-                );
+                    );
 
             } else {
                 res.render('success', {
@@ -159,3 +160,4 @@ router.post('/reset/password', function (req, res, next) {
         });
     }
 });
+}
