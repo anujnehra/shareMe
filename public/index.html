@@ -1,41 +1,47 @@
 <!DOCTYPE html>
 <html ng-app="shareMe">
-    <head>
-        <meta charset="utf-8">
-        <base href="/">
-        <link href="stylesheet/bootstrap.min.css" rel="stylesheet" />
-        <link href="stylesheet/animate.min.css" rel="stylesheet">
-        <link href="stylesheet/timeline.css" rel="stylesheet">
-        <link href="stylesheet/login_register.css" rel="stylesheet">
-        <link href="stylesheet/buttons.css" rel="stylesheet">
-        <link href="stylesheet/common.css" rel="stylesheet">
+<head>
+    <title>ShareMe</title>
+    <meta charset="utf-8">
+    <base href="/">
+    <link href="stylesheet/bootstrap.min.css" rel="stylesheet" />
+    <link href="stylesheet/animate.min.css" rel="stylesheet">
+    <link href="stylesheet/timeline.css" rel="stylesheet">
+    <link href="stylesheet/login_register.css" rel="stylesheet">
+    <link href="stylesheet/buttons.css" rel="stylesheet">
+    <link href="stylesheet/common.css" rel="stylesheet">
 
-    </head>
+</head>
 
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
-    <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
-    <div ng-view></div>
+<div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
+<div ng-view></div>
 
-    <script src="javascript/angular.min.js"></script>
-    <script src="javascript/angular-route.js"></script>
-    <script src="javascript/angular-cookies.js"></script>
-    <script src="modules/route.js"></script>
-    <script src="authenticationFactory.js"></script>
-    <script src="socketFactory.js"></script>
-    <script src="modules/authentication/controller.js"></script>
-    <script src="modules/profile/controller.js"></script>
-    <script src="flashService.js"></script>
-    <script src="userService.js"></script>
-    <script src="validateEmail.js"></script>
-    <script src="noSpecialCharacter.js"></script>
-    <script src="passwordValidate.js"></script>
-    <script src="ngThumb.js"></script>
-    <script src="onlyDigits.js"></script>
-    <script src="limitTo.js"></script>
-    <script src="javascript/jquery.min.js"></script>
-    <script src="javascript/bootstrap.min.js"></script>
-    <script src="javascript/ui-bootstrap-tpls-2.5.0.min.js"></script>
-    <script src="javascript/angular-file-upload.min.js"></script>
-    <!--<script src="https://cdn.socket.io/socket.io-1.0.0.js"></script>-->
+<script src="javascript/angular.min.js"></script>
+<script src="javascript/angular-route.js"></script>
+<script src="javascript/angular-cookies.js"></script>
+<script src="modules/route.js"></script>
+<script src="socketFactory.js"></script>
+<script src="modules/authentication/controller.js"></script>
+<script src="modules/profile/controller.js"></script>
+<script src="flashService.js"></script>
+<script src="userService.js"></script>
+<script src="validateEmail.js"></script>
+<script src="noSpecialCharacter.js"></script>
+<script src="passwordValidate.js"></script>
+<script src="ngThumb.js"></script>
+<script src="onlyDigits.js"></script>
+<script src="limitTo.js"></script>
+<script src="javascript/jquery.min.js"></script>
+<script src="javascript/bootstrap.min.js"></script>
+<script src="javascript/ui-bootstrap-tpls-2.5.0.min.js"></script>
+<script src="javascript/angular-file-upload.min.js"></script>
+<script src="socket.io-client/dist/socket.io.js"></script>
+
+<script>
+  var socket = io.connect('http://localhost:8080');
+</script>
+
+
 </html>
