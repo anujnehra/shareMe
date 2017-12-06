@@ -1,179 +1,166 @@
- <style type="text/css">
-    .conversation-wrap
-    {
-        box-shadow: -2px 0 3px #ddd;
-        padding:0;
-        max-height: 400px;
-        overflow: auto;
-    }
-    .conversation
-    {
-        padding:5px;
-        border-bottom:1px solid #ddd;
-        margin:0;
-
+<style>
+    * {
+        box-sizing: border-box;
     }
 
-    .message-wrap
-    {
-        box-shadow: 0 0 3px #ddd;
-        padding:0;
-
-    }
-    .msg
-    {
-        padding:5px;
-        /*border-bottom:1px solid #ddd;*/
-        margin:0;
-    }
-    .msg-wrap
-    {
-        padding:10px;
-        max-height: 400px;
-        overflow: auto;
-
+    html {
+        font-weight: 300;
+        -webkit-font-smoothing: antialiased;
     }
 
-    .time
-    {
-        color:#bfbfbf;
+    html, input {
+        font-family:
+            "HelveticaNeue-Light",
+            "Helvetica Neue Light",
+            "Helvetica Neue",
+            Helvetica,
+            Arial,
+            "Lucida Grande",
+            sans-serif;
     }
 
-    .send-wrap
-    {
-        border-top: 1px solid #eee;
-        border-bottom: 1px solid #eee;
-        padding:10px;
-        /*background: #f8f8f8;*/
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
     }
 
-    .send-message
-    {
-        resize: none;
+    ul {
+        list-style: none;
+        word-wrap: break-word;
     }
 
-    .highlight
-    {
-        background-color: #f7f7f9;
-        border: 1px solid #e1e1e8;
+    /* Pages */
+
+    .pages {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
     }
 
-    .send-message-btn
-    {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        border-bottom-left-radius: 0;
-
-        border-bottom-right-radius: 0;
-    }
-    .btn-panel
-    {
-        background: #f7f7f9;
+    .page {
+        height: 100%;
+        position: absolute;
+        width: 100%;
     }
 
-    .btn-panel .btn
-    {
-        color:#b8b8b8;
+    /* Login Page */
 
-        transition: 0.2s all ease-in-out;
+    .login.page {
+        background-color: #000;
     }
 
-    .btn-panel .btn:hover
-    {
-        color:#666;
-        background: #f8f8f8;
-    }
-    .btn-panel .btn:active
-    {
-        background: #f8f8f8;
-        box-shadow: 0 0 1px #ddd;
-    }
+    .login.page .form {
+        height: 100px;
+        margin-top: -100px;
+        position: absolute;
 
-    .btn-panel-conversation .btn,.btn-panel-msg .btn
-    {
-
-        background: #f8f8f8;
-    }
-    .btn-panel-conversation .btn:first-child
-    {
-        border-right: 1px solid #ddd;
-    }
-
-    .msg-wrap .media-heading
-    {
-        color:#003bb3;
-        font-weight: 700;
-    }
-
-
-    .msg-date
-    {
-        background: none;
         text-align: center;
-        color:#aaa;
-        border:none;
-        box-shadow: none;
-        border-bottom: 1px solid #ddd;
+        top: 50%;
+        width: 100%;
     }
 
-
-    body::-webkit-scrollbar {
-        width: 12px;
+    .login.page .form .usernameInput {
+        background-color: transparent;
+        border: none;
+        border-bottom: 2px solid #fff;
+        outline: none;
+        padding-bottom: 15px;
+        text-align: center;
+        width: 400px;
     }
 
-
-    /* Let's get this party started */
-    ::-webkit-scrollbar {
-        width: 6px;
+    .login.page .title {
+        font-size: 200%;
     }
 
-    /* Track */
-    ::-webkit-scrollbar-track {
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
-/*        -webkit-border-radius: 10px;
-border-radius: 10px;*/
-}
+    .login.page .usernameInput {
+        font-size: 200%;
+        letter-spacing: 3px;
+    }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-/*        -webkit-border-radius: 10px;
-border-radius: 10px;*/
-background:#ddd; 
--webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
-}
-::-webkit-scrollbar-thumb:window-inactive {
-    background: #ddd; 
-}
+    .login.page .title, .login.page .usernameInput {
+        color: #fff;
+        font-weight: 100;
+    }
 
+    /* Chat page */
 
-</style> 
+    .chat.page {
+        display: none;
+    }
 
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    /* Font */
 
-<div class="container">
-    <div class="row">
-        <div class="message-wrap col-lg-8">
-            <div class="msg-wrap">
-                <div class="media msg">
-                    <div class="media-body">
-                        <small class="pull-right time"> </small>
-                        <h5 class="media-heading">{{chatUsername}}</h5>
+    .messages {
+        font-size: 150%;
+    }
 
-                        <small class="col-lg-10" ng-repeat="customer in newCustomers">{{customer.name}}</small>
-                    </div>
-                </div>
+    .inputMessage {
+        font-size: 100%;
+    }
 
-            </div>
+    .log {
+        color: gray;
+        font-size: 70%;
+        margin: 5px;
+        text-align: center;
+    }
 
-            <div class="send-wrap ">
-                <textarea ng-model="currentCustomer.name" class="form-control send-message" rows="3" placeholder="Write a reply..."></textarea>
-            </div>
-            <div class="btn-panel">
-                
-                <a ng-click="send()" href="#" class=" col-lg-4 text-right btn   send-message-btn pull-right" role="button">
-                <i class="fa fa-plus">
-                </i> Send Message</a>
-            </div>
+    /* Messages */
+
+    .chatArea {
+        height: 100%;
+        padding-bottom: 60px;
+    }
+
+    .messages {
+        height: 100%;
+        margin: 0;
+        overflow-y: scroll;
+        padding: 10px 20px 10px 20px;
+    }
+
+    .message.typing .messageBody {
+        color: gray;
+    }
+
+    .username {
+        font-weight: 700;
+        overflow: hidden;
+        padding-right: 15px;
+        text-align: right;
+    }
+
+    /* Input */
+
+    .inputMessage {
+        border: 10px solid #000;
+        bottom: 0;
+        height: 60px;
+        left: 0;
+        outline: none;
+        padding-left: 10px;
+        position: absolute;
+        right: 0;
+        width: 100%;
+    }
+</style>
+
+<ul class="pages">
+    <li class="chat page">
+        <div class="chatArea">
+            <ul class="messages"></ul>
         </div>
-    </div>
-</div>
+        <input class="inputMessage" ng-model="inputMessage" placeholder="Type here..."/>
+    </li>
+    <li class="login page">
+        <div class="form">
+            <h3 class="title">Hit enter to continue!</h3>
+            <input class="usernameInput" value={{chatUsername}} type="text" maxlength="14" />
+        </div>
+    </li>
+</ul>
+
+<script src="javascript/chat.menu.js"></script>

@@ -58,28 +58,13 @@
 
     }]);
 
-    profile.controller('HomeController', ['$scope', 'socketFac','$window','UserService', function($scope, socketFac,$window,UserService) {
-
-        $scope.newCustomers = [];
-        $scope.currentCustomer = {};
+    profile.controller('HomeController', ['$scope','$window','UserService', function($scope,$window,UserService) {
 
         UserService.getById($window.sessionStorage.getItem("user_id"))
-        .then(function (response) {
+            .then(function (response) {
             if (response.success) {
                 $scope.chatUsername = response.data[0].first_name +' '+response.data[0].last_name;
             }
-        });
-
-
-        $scope.send = function() {
-            socket.emit('add-customer', $scope.currentCustomer);
-            $scope.currentCustomer.name = "";
-        };
-
-        socket.on('notification', function(data) {
-            $scope.$apply(function() {
-                $scope.newCustomers.push(data.customer);
-            });
         });
 
     }]);
