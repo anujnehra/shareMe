@@ -120,6 +120,7 @@ module.exports = function (app, routes) {
      app.post('/api/login', includeApiMethodsJs.login);
      app.post('/api/create', includeApiMethodsJs.create);
      app.post('/api/fetchUserByEmail', includeApiMethodsJs.fetchUserByEmail);
+     app.get('/api/getById/:id', includeApiMethodsJs.getById);
 
     /**
      * Upload profile picture

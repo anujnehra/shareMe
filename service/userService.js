@@ -8,7 +8,7 @@
         var service = {};
 
         service.GetAll = GetAll;
-        service.GetById = GetById;
+        service.getById = getById;
         service.FetchByEmail = FetchByEmail;
         service.Create = Create;
         service.Update = Update;
@@ -20,7 +20,7 @@
             return $http.get('/api/getAll').then(handleSuccess, handleError('Error getting all users'));
         }
 
-        function GetById(id) {
+        function getById(id) {
             return $http.get('/api/getById/' + id).then(handleSuccess, handleError('Error getting user by id'));
         }
 

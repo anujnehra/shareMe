@@ -50,3 +50,17 @@ exports.fetchUserByEmail = function (req, res) {
 
     });
 };
+
+exports.getById = function (req, res) {
+    connection.query("SELECT * FROM sm_users WHERE id = '" + req.params.id + "' ", function (error, results) {
+        if (error) {
+            logError(error, res);
+        }
+        if (results.length > 0) {
+            res.send({success: true, message: '', data: results});
+        } else {
+            res.send({success: false, message: 'user not found', data: results});
+        }
+
+    });
+};

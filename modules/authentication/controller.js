@@ -1,7 +1,7 @@
 (function () {
     'use strict';
     var authentication = angular.module('Authentication');
-    authentication.controller('LoginController', ['$scope', '$rootScope', '$location', '$timeout', '$http', 'UserService', 'FlashService', function ($scope, $rootScope, $location, $timeout, $http, UserService, FlashService) {
+    authentication.controller('LoginController', ['$scope', '$rootScope', '$location', '$timeout', '$http', 'UserService', 'FlashService','$window', function ($scope, $rootScope, $location, $timeout, $http, UserService, FlashService,$window) {
         $scope.login = function () {
             $scope.dataLoading = true;
             $http({
@@ -9,6 +9,9 @@
                 url: '/login',
                 data: {email: $scope.email, password: $scope.password}
             }).then(function (response) {
+
+                $window.sessionStorage.setItem("user_id",response.data.data[0].id);
+                
                 if (response.data.success) {
                     $location.path('/profile');
                 } else {
@@ -23,24 +26,24 @@
         $scope.register = function () {
             $scope.dataLoading = true;
             UserService.FetchByEmail($scope.user)
-                .then(function (response) {
-                    if (response.success) {
-                        $scope.error = 'Email already exist!';
+            .then(function (response) {
+                if (response.success) {
+                    $scope.error = 'Email already exist!';
+                    $scope.dataLoading = false;
+                } else {
+                    UserService.Create($scope.user)
+                    .then(function (response) {
+                        if (response.success) {
+                            FlashService.Success('Registration successful', true);
+                            $scope.user = {};
+                            $scope.formRegistration.$setPristine();
+                        } else {
+                            FlashService.Error(response.message);
+                        }
                         $scope.dataLoading = false;
-                    } else {
-                        UserService.Create($scope.user)
-                            .then(function (response) {
-                                if (response.success) {
-                                    FlashService.Success('Registration successful', true);
-                                    $scope.user = {};
-                                    $scope.formRegistration.$setPristine();
-                                } else {
-                                    FlashService.Error(response.message);
-                                }
-                                $scope.dataLoading = false;
-                            });
-                    }
-                });
+                    });
+                }
+            });
         };
     }]);
 
@@ -48,28 +51,28 @@
         $scope.forgot = function () {
             $scope.dataLoading = true;
             UserService.FetchByEmail($scope.user)
-                .then(function (response) {
-                    if (response.success) {
-                        $http({
-                            method: 'POST',
-                            url: '/mail/forgot/password',
-                            data: $scope.user
-                        }).then(function (responseHttp) {
-                            if (responseHttp.data.status) {
-                                FlashService.Success(responseHttp.data.message, true);
-                            } else {
-                                FlashService.Error(responseHttp.data.message);
-                            }
-                            $scope.dataLoading = false;
-                        }, function (error) {
+            .then(function (response) {
+                if (response.success) {
+                    $http({
+                        method: 'POST',
+                        url: '/mail/forgot/password',
+                        data: $scope.user
+                    }).then(function (responseHttp) {
+                        if (responseHttp.data.status) {
+                            FlashService.Success(responseHttp.data.message, true);
+                        } else {
+                            FlashService.Error(responseHttp.data.message);
+                        }
+                        $scope.dataLoading = false;
+                    }, function (error) {
 
-                        });
-                        $scope.dataLoading = false;
-                    } else {
-                        FlashService.Error(response.message);
-                        $scope.dataLoading = false;
-                    }
-                });
+                    });
+                    $scope.dataLoading = false;
+                } else {
+                    FlashService.Error(response.message);
+                    $scope.dataLoading = false;
+                }
+            });
         };
     }]);
 
